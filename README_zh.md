@@ -1,8 +1,4 @@
 <p align="center">
-  <img src="assets/z3r0-logo.png" width="156" alt="XuanMu 标志" />
-</p>
-
-<p align="center">
   <a href="README.md">English</a> ·
   <strong>中文</strong>
 </p>
