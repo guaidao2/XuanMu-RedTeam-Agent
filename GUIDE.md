@@ -354,7 +354,7 @@ Each skill directory structure:
 
 ### SKILL.md Format
 
-```markdown
+````markdown
 ---
 name: my-tool
 description: A concise description of what this skill does.
@@ -375,7 +375,7 @@ my-tool --help
 ## Output
 
 - Report what was done and what the results are
-```
+````
 
 ### How Agents Use Skills
 

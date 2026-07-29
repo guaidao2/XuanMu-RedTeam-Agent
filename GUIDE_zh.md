@@ -370,7 +370,7 @@ mkdir -p .agents/skills/my-tool
 
 ### SKILL.md 格式
 
-```markdown
+````markdown
 ---
 name: my-tool
 description: 用 my-tool 做某事的简明说明。
@@ -391,7 +391,7 @@ my-tool --help
 ## 输出规范
 
 - 报告做了什么、结果是什么
-```
+````
 
 ### Agent 如何使用 Skill
 
