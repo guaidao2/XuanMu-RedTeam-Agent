@@ -1,5 +1,5 @@
 import { Empty, TabPane, Tabs, Tag } from "@douyinfe/semi-ui";
-import { Boxes, Bug, FileText, GitBranch, Network, Route } from "lucide-react";
+import { Boxes, Bug, FileText, GitBranch, List, Network, Route } from "lucide-react";
 import { useEffect, useMemo, useState, type ReactNode } from "react";
 import { showApiError } from "../../shared/api/feedback";
 import { WORK_PROJECT_ASSET_TYPE } from "../../shared/api/contract";
@@ -33,6 +33,7 @@ import {
   BLACKBOARD_NODE_TYPE_LABEL,
 } from "../../shared/lib/labels";
 import { ProjectGraphCanvas } from "./ProjectGraphCanvas";
+import { BlackboardGraphCanvas } from "./BlackboardGraphCanvas";
 import { filledDetailItems, type DetailItem } from "./workProjectDetails";
 import { formatWorkProjectAsset } from "./workProjectView";
 
@@ -166,6 +167,7 @@ export function GraphView({ assets, graph }: { assets: WorkProjectAsset[]; graph
 function BlackboardList({ projectId }: { projectId?: number }) {
   const [nodes, setNodes] = useState<BlackboardNode[]>([]);
   const [loading, setLoading] = useState(false);
+  const [viewMode, setViewMode] = useState<"list" | "graph">("graph");
 
   useEffect(() => {
     if (!projectId) {
@@ -195,25 +197,49 @@ function BlackboardList({ projectId }: { projectId?: number }) {
   if (!nodes.length) return <RecordEmpty title="No blackboard nodes yet." />;
 
   return (
-    <div className="project-record-list">
-      {nodes.map((node) => (
-        <article key={node.id} className="project-record-row">
-          <header>
-            <strong>{node.description}</strong>
-            <div>
-              <Tag color={BLACKBOARD_NODE_TYPE_COLOR[node.node_type]}>{BLACKBOARD_NODE_TYPE_LABEL[node.node_type]}</Tag>
-              <Tag color={BLACKBOARD_NODE_STATUS_COLOR[node.status]}>{BLACKBOARD_NODE_STATUS_LABEL[node.status]}</Tag>
-            </div>
-          </header>
-          <RecordDetails items={[
-            ["Parent IDs", node.parent_ids !== "[]" ? node.parent_ids : undefined],
-            ["Creator", node.creator_agent_code || undefined],
-            ["Confidence", node.confidence < 1 ? `${Math.round(node.confidence * 100)}%` : undefined],
-            ["Updated", formatDateTime(node.updated_at)],
-          ]} />
-        </article>
-      ))}
-    </div>
+    <>
+      <div className="project-record-view-toggle">
+        <button
+          type="button"
+          className={viewMode === "graph" ? "active" : ""}
+          onClick={() => setViewMode("graph")}
+          aria-label="Graph view"
+        >
+          <GitBranch size={14} /> Graph
+        </button>
+        <button
+          type="button"
+          className={viewMode === "list" ? "active" : ""}
+          onClick={() => setViewMode("list")}
+          aria-label="List view"
+        >
+          <List size={14} /> List
+        </button>
+      </div>
+      {viewMode === "graph" ? (
+        <BlackboardGraphCanvas nodes={nodes} />
+      ) : (
+        <div className="project-record-list">
+          {nodes.map((node) => (
+            <article key={node.id} className="project-record-row">
+              <header>
+                <strong>{node.description}</strong>
+                <div>
+                  <Tag color={BLACKBOARD_NODE_TYPE_COLOR[node.node_type]}>{BLACKBOARD_NODE_TYPE_LABEL[node.node_type]}</Tag>
+                  <Tag color={BLACKBOARD_NODE_STATUS_COLOR[node.status]}>{BLACKBOARD_NODE_STATUS_LABEL[node.status]}</Tag>
+                </div>
+              </header>
+              <RecordDetails items={[
+                ["Parent IDs", node.parent_ids !== "[]" ? node.parent_ids : undefined],
+                ["Creator", node.creator_agent_code || undefined],
+                ["Confidence", node.confidence < 1 ? `${Math.round(node.confidence * 100)}%` : undefined],
+                ["Updated", formatDateTime(node.updated_at)],
+              ]} />
+            </article>
+          ))}
+        </div>
+      )}
+    </>
   );
 }
 
