@@ -13,8 +13,9 @@
 5. [Using the Playground](#5-using-the-playground)
 6. [Meet the Agent Team](#6-meet-the-agent-team)
 7. [Using the Blackboard](#7-using-the-blackboard)
-8. [Understanding the Evidence Plane](#8-understanding-the-evidence-plane)
-9. [FAQ](#9-faq)
+8. [Custom Skills](#8-custom-skills)
+9. [Understanding the Evidence Plane](#9-understanding-the-evidence-plane)
+10. [FAQ](#10-faq)
 
 ---
 
@@ -325,7 +326,86 @@ In a conversation say: "Spend more time on port 80, skip SSH for now"
 
 ---
 
-## 8. Understanding the Evidence Plane
+## 8. Custom Skills
+
+### What Are Skills
+
+Skills are **domain knowledge modules** that agents can load dynamically. Each Skill corresponds to a tool or methodology. Agents use `load_skill` to fetch usage instructions before operating the tool.
+
+XuanMu comes with built-in skills (nmap, sqlmap, httpx, binwalk, jadx, etc.), primarily used in sandbox container mode.
+
+### Adding Your Own Skill (Local Mode)
+
+Drop a skill directory under `.agents/skills/` — no code changes needed:
+
+```bash
+mkdir -p .agents/skills/my-tool
+```
+
+Each skill directory structure:
+
+```
+.agents/skills/
+└── my-tool/
+    ├── SKILL.md        ← required: skill instructions (with YAML frontmatter)
+    ├── script.sh       ← optional: helper scripts
+    └── data/           ← optional: data files
+```
+
+### SKILL.md Format
+
+```markdown
+---
+name: my-tool
+description: A concise description of what this skill does.
+---
+
+# My Tool
+
+Command format and notes for using `my-tool`...
+
+## Help First
+
+Always run the help command first for real options:
+
+```sh
+my-tool --help
+```
+
+## Output
+
+- Report what was done and what the results are
+```
+
+### How Agents Use Skills
+
+1. **`list_skills`** — Agent checks what skills are available
+2. **`load_skill("my-tool")`** — Agent loads the full SKILL.md into context
+3. Agent follows the SKILL.md guidance to execute commands
+4. If the skill directory has helper scripts, the agent can reference their paths
+
+### Built-in Skills
+
+| Skill | Purpose |
+|-------|---------|
+| `nmap` | Port scanning, service detection, NSE scripts |
+| `sqlmap` | Automated SQL injection detection & exploitation |
+| `httpx` | HTTP probing, tech stack fingerprinting |
+| `binwalk` | Firmware analysis, file extraction |
+| `jadx` | APK/DEX decompilation |
+| `apktool` | APK unpack/repack |
+| `ghidra` | Binary reverse analysis |
+| `openssl` | Certificate analysis, TLS diagnostics |
+| `dns-whois` | DNS queries, WHOIS information gathering |
+| `observer-ward` | Web fingerprinting |
+| `archive-file-triage` | Archive classification & unpacking |
+| `sandbox-shell` | Basic sandbox shell operations |
+
+> These skills are primarily used in **sandbox container mode**. In local mode (no Docker), only custom skills under `.agents/skills/` are loaded.
+
+---
+
+## 9. Understanding the Evidence Plane
 
 The Evidence Plane is the project's structured data layer, complementing the Blackboard:
 
@@ -362,7 +442,7 @@ The Evidence Plane only records "what exists, what was confirmed" — that's the
 
 ---
 
-## 9. FAQ
+## 10. FAQ
 
 ### Q: Agents aren't working as expected?
 

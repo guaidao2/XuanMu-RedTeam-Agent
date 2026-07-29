@@ -13,8 +13,9 @@
 5. [使用 Playground 对话](#5-使用-playground-对话)
 6. [理解智能体团队](#6-理解智能体团队)
 7. [使用黑板（Blackboard）](#7-使用黑板blackboard)
-8. [理解证据平面](#8-理解证据平面)
-9. [常见问题](#9-常见问题)
+8. [使用自定义技能（Skills）](#8-使用自定义技能skills)
+9. [理解证据平面](#9-理解证据平面)
+10. [常见问题](#10-常见问题)
 
 ---
 
@@ -333,7 +334,86 @@ Playground 是你与智能体团队交互的主要界面。
 
 ---
 
-## 8. 理解证据平面
+## 8. 使用自定义技能（Skills）
+
+### 什么是 Skill
+
+Skill 是 Agent 可以动态加载的**领域知识模块**。每个 Skill 对应一个工具或方法论，Agent 在执行任务时通过 `load_skill` 获取用法说明，然后按照说明操作。
+
+XuanMu 内置了多个 Skill（nmap、sqlmap、httpx、binwalk、jadx 等），主要在沙箱容器中使用。
+
+### 自定义 Skill（本地模式）
+
+你可以在本地 `.agents/skills/` 目录下添加自己的 Skill，无需改代码：
+
+```bash
+mkdir -p .agents/skills/my-tool
+```
+
+每个 Skill 目录结构：
+
+```
+.agents/skills/
+└── my-tool/
+    ├── SKILL.md        ← 必需：技能说明（含 YAML 头）
+    ├── script.sh       ← 可选：辅助脚本
+    └── data/           ← 可选：数据文件
+```
+
+### SKILL.md 格式
+
+```markdown
+---
+name: my-tool
+description: 用 my-tool 做某事的简明说明。
+---
+
+# My Tool
+
+使用 `my-tool` 的命令格式和注意事项...
+
+## 帮助优先
+
+先执行帮助命令获取真实选项：
+
+```sh
+my-tool --help
+```
+
+## 输出规范
+
+- 报告做了什么、结果是什么
+```
+
+### Agent 如何使用 Skill
+
+1. **`list_skills`** — Agent 查看有哪些可用技能
+2. **`load_skill("my-tool")`** — Agent 加载 SKILL.md 全文到上下文
+3. Agent 按照 SKILL.md 的指引执行命令
+4. 如果 Skill 目录下有辅助脚本，Agent 可以读取路径后引用
+
+### 内置 Skill 清单
+
+| Skill | 用途 |
+|-------|------|
+| `nmap` | 端口扫描、服务识别、NSE 脚本 |
+| `sqlmap` | SQL 注入自动检测与利用 |
+| `httpx` | HTTP 探测、技术栈指纹 |
+| `binwalk` | 固件分析、文件提取 |
+| `jadx` | APK/DEX 反编译 |
+| `apktool` | APK 解包/重打包 |
+| `ghidra` | 二进制逆向分析 |
+| `openssl` | 证书分析、TLS 诊断 |
+| `dns-whois` | DNS 查询、WHOIS 信息收集 |
+| `observer-ward` | Web 指纹识别 |
+| `archive-file-triage` | 压缩包分类与解包 |
+| `sandbox-shell` | 沙箱环境基础 Shell 操作 |
+
+> 这些 Skill 主要在**沙箱容器模式**下使用。本地模式（无需 Docker）下只加载 `.agents/skills/` 中的自定义 Skill。
+
+---
+
+## 9. 理解证据平面
 
 证据平面（Evidence Plane）是项目的结构化数据层，与黑板互补：
 
@@ -370,7 +450,7 @@ Playground 是你与智能体团队交互的主要界面。
 
 ---
 
-## 9. 常见问题
+## 10. 常见问题
 
 ### Q: 智能体不按预期工作怎么办？
 
