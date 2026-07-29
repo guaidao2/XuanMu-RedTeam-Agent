@@ -155,8 +155,12 @@
 ### 一键安装
 
 ```bash
+git clone https://github.com/guaidao2/XuanMu-RedTeam-Agent.git
+cd XuanMu-RedTeam-Agent
 bash setup.sh
 ```
+
+> 📖 **首次使用？请先阅读 [使用入门手册](GUIDE_zh.md)**，包含从安装到实战的完整指引。
 
 脚本会自动完成：
 1. 安装系统依赖（PostgreSQL、Node.js）
