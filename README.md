@@ -155,8 +155,12 @@ The Blackboard layer complements the existing evidence plane (Asset / Finding / 
 ### One-command setup
 
 ```bash
+git clone https://github.com/guaidao2/XuanMu-RedTeam-Agent.git
+cd XuanMu-RedTeam-Agent
 bash setup.sh
 ```
+
+> 📖 **New user? Read the [Getting Started Guide](GUIDE.md)** — from installation to your first project.
 
 This will:
 1. Install system dependencies (PostgreSQL, Node.js)
