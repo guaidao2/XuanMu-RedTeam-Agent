@@ -477,15 +477,15 @@ my-tool --help
 
 ```bash
 source .venv/bin/activate
-python -c "
+python << 'EOF'
 from database import get_sync_session
 from model.system.users import SystemUser
 from passlib.hash import bcrypt
 with get_sync_session() as s:
-    user = s.query(SystemUser).filter(SystemUser.email == 'admin@admin.com').first()
-    user.password = bcrypt.hash('admin123')
+    user = s.query(SystemUser).filter(SystemUser.email == "admin@admin.com").first()
+    user.password = bcrypt.hash("admin123")
     s.commit()
-"
+EOF
 ```
 
 ### Q: 如何升级到最新版本？
