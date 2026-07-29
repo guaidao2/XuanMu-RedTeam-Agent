@@ -6,20 +6,21 @@
 
 ## 目录
 
-1. [快速安装](#1-快速安装)
-2. [配置 LLM](#2-配置-llm)
-3. [启动与登录](#3-启动与登录)
-4. [创建你的第一个项目](#4-创建你的第一个项目)
-5. [使用 Playground 对话](#5-使用-playground-对话)
-6. [理解智能体团队](#6-理解智能体团队)
-7. [使用黑板（Blackboard）](#7-使用黑板blackboard)
-8. [使用自定义技能（Skills）](#8-使用自定义技能skills)
-9. [理解证据平面](#9-理解证据平面)
-10. [常见问题](#10-常见问题)
+1. [快速安装](#quick-install)
+2. [配置 LLM](#configure-llm)
+3. [启动与登录](#start--login)
+4. [创建你的第一个项目](#create-project)
+5. [使用 Playground 对话](#playground)
+6. [理解智能体团队](#agent-team)
+7. [使用黑板（Blackboard）](#blackboard)
+8. [使用自定义技能（Skills）](#custom-skills)
+9. [理解证据平面](#evidence-plane)
+10. [常见问题](#faq)
 
 ---
 
-## 1. 快速安装
+<a id="quick-install"></a>
+## 1. 快速安装 / Quick Install
 
 ### 环境要求
 
@@ -64,7 +65,8 @@ bash setup.sh
 
 ---
 
-## 2. 配置 LLM
+<a id="configure-llm"></a>
+## 2. 配置 LLM / Configure LLM
 
 安装完成后，需要配置 LLM API 才能让智能体工作。
 
@@ -122,7 +124,8 @@ vi .xuanmu/config.json
 
 ---
 
-## 3. 启动与登录
+<a id="start--login"></a>
+## 3. 启动与登录 / Start & Login
 
 ### 启动
 
@@ -159,7 +162,8 @@ bash stop.sh
 
 ---
 
-## 4. 创建你的第一个项目
+<a id="create-project"></a>
+## 4. 创建你的第一个项目 / Create Project
 
 项目（WorkProject）是 XuanMu 的核心组织单位——所有资产、发现、推理过程都归属于一个项目。
 
@@ -188,7 +192,8 @@ bash stop.sh
 
 ---
 
-## 5. 使用 Playground 对话
+<a id="playground"></a>
+## 5. 使用 Playground 对话 / Playground
 
 Playground 是你与智能体团队交互的主要界面。
 
@@ -230,7 +235,8 @@ Playground 是你与智能体团队交互的主要界面。
 
 ---
 
-## 6. 理解智能体团队
+<a id="agent-team"></a>
+## 6. 理解智能体团队 / Agent Team
 
 ### 角色分工
 
@@ -256,7 +262,8 @@ Playground 是你与智能体团队交互的主要界面。
 
 ---
 
-## 7. 使用黑板（Blackboard）
+<a id="blackboard"></a>
+## 7. 使用黑板（Blackboard） / Blackboard
 
 黑板是本平台的核心特色，记录智能体的完整推理过程。
 
@@ -334,7 +341,8 @@ Playground 是你与智能体团队交互的主要界面。
 
 ---
 
-## 8. 使用自定义技能（Skills）
+<a id="custom-skills"></a>
+## 8. 使用自定义技能（Skills） / Custom Skills
 
 ### 什么是 Skill
 
@@ -413,7 +421,8 @@ my-tool --help
 
 ---
 
-## 9. 理解证据平面
+<a id="evidence-plane"></a>
+## 9. 理解证据平面 / Evidence Plane
 
 证据平面（Evidence Plane）是项目的结构化数据层，与黑板互补：
 
@@ -450,7 +459,8 @@ my-tool --help
 
 ---
 
-## 10. 常见问题
+<a id="faq"></a>
+## 10. 常见问题 / FAQ
 
 ### Q: 智能体不按预期工作怎么办？
 
