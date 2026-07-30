@@ -68,6 +68,7 @@ export function BlackboardGraphCanvas({ nodes }: { nodes: BlackboardNode[] }) {
     cy.add(elements);
     const layout = cy.layout({
       name: "fcose",
+      // @ts-expect-error fcose-specific option not in base types
       quality: "proof",
       randomize: true,
       animate: false,
@@ -187,6 +188,7 @@ function blackboardStyles(): cytoscape.StylesheetJson {
         "active-bg-opacity": 0.12,
         "outside-texture-bg-color": "#08111c",
         "outside-texture-bg-opacity": 0.9,
+        "selection-box-border-width": 1,
       },
     },
     {
