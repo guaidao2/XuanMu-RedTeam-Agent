@@ -425,6 +425,19 @@ These skills only work with **sandbox containers enabled**:
 
 > These skills are primarily used in **sandbox container mode**. In local mode (no Docker), only custom skills under `.agents/skills/` are loaded.
 
+### Skills vs Knowledges
+
+XuanMu has two independent knowledge loading systems:
+
+| | Skills | Knowledges |
+|------|--------|------------|
+| Path | `.agents/skills/` | `.xuanmu/agents/{role}/knowledges/` |
+| Scope | **Shared** — all agents | **Per-role** — each role's own |
+| Tools | `list_skills` / `load_skill` | `find_knowledge` / `load_knowledge` |
+| Best for | Tool usage guides, shared methods | Role-specific methodology, standards |
+
+> Skills are "how to use nmap". Knowledges are "penetration testing methodology". Two systems, zero conflicts.
+
 ---
 
 ## 9. Understanding the Evidence Plane

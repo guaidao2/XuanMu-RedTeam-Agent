@@ -441,6 +441,19 @@ my-tool --help
 
 > 这些 Skill 主要在**沙箱容器模式**下使用。本地模式（无需 Docker）下只加载 `.agents/skills/` 中的自定义 Skill。
 
+### Skills 与 Knowledges 的区别
+
+XuanMu 有两套独立的知识加载系统：
+
+| | Skills | Knowledges |
+|------|--------|------------|
+| 路径 | `.agents/skills/` | `.xuanmu/agents/{角色}/knowledges/` |
+| 作用域 | **共享** — 所有 Agent 可用 | **专属** — 每个角色自己的知识库 |
+| 工具 | `list_skills` / `load_skill` | `find_knowledge` / `load_knowledge` |
+| 适合放什么 | 通用工具说明、共享方法论 | 角色专属方法论、行业标准 |
+
+> Skills 放「怎么用 nmap」，Knowledges 放「渗透测试方法论」。各管各的，互不干扰。
+
 ---
 
 <a id="evidence-plane"></a>
