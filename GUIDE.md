@@ -332,27 +332,47 @@ In a conversation say: "Spend more time on port 80, skip SSH for now"
 
 Skills are **domain knowledge modules** that agents can load dynamically. Each Skill corresponds to a tool or methodology. Agents use `load_skill` to fetch usage instructions before operating the tool.
 
-XuanMu comes with built-in skills (nmap, sqlmap, httpx, binwalk, jadx, etc.), primarily used in sandbox container mode.
+### Two Modes
 
-### Adding Your Own Skill (Local Mode)
+XuanMu has two Skill modes with different paths and purposes:
 
-Drop a skill directory under `.agents/skills/` — no code changes needed:
+| Mode | Path | Purpose | When Available |
+|------|------|---------|----------------|
+| **Local** | `project-root/.agents/skills/` | User-defined skills | No Docker, always available |
+| **Sandbox** | `sandbox/.agents/skills/` | Built-in tool skills (nmap etc.) | Docker sandbox only |
+
+### Local Mode (Your Own Skills)
+
+Create skills under `.agents/skills/` at the **project root** — no Docker, no code changes. Skills can be pure knowledge documents or include executable scripts:
 
 ```bash
-mkdir -p .agents/skills/my-tool
+# Run from project root
+mkdir -p .agents/skills/my-skill
 ```
 
-Each skill directory structure:
+Directory structure:
 
 ```
-.agents/skills/
-└── my-tool/
-    ├── SKILL.md        ← required: skill instructions (with YAML frontmatter)
-    ├── script.sh       ← optional: helper scripts
-    └── data/           ← optional: data files
+project-root/
+└── .agents/
+    └── skills/                   ← create this manually
+        ├── sql-injection-guide/  ← pure knowledge (SKILL.md only)
+        │   └── SKILL.md
+        ├── windows-privesc/      ← pure knowledge
+        │   └── SKILL.md
+        └── my-scanner/           ← with scripts (SKILL.md + resources)
+            ├── SKILL.md
+            ├── scan.sh
+            └── payloads.txt
 ```
+
+### Sandbox Mode (Built-in Tool Skills)
+
+Skills under `sandbox/.agents/skills/` are built into the project and **only available inside Docker sandbox containers**. They correspond to CLI tools pre-installed in the container image. If you're not using sandbox mode, they won't be loaded.
 
 ### SKILL.md Format
+
+Both modes use the exact same SKILL.md format:
 
 ````markdown
 ---
@@ -384,7 +404,9 @@ my-tool --help
 3. Agent follows the SKILL.md guidance to execute commands
 4. If the skill directory has helper scripts, the agent can reference their paths
 
-### Built-in Skills
+### Built-in Skills (Sandbox Mode Only)
+
+These skills only work with **sandbox containers enabled**:
 
 | Skill | Purpose |
 |-------|---------|

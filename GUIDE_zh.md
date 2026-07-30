@@ -348,27 +348,47 @@ Playground 是你与智能体团队交互的主要界面。
 
 Skill 是 Agent 可以动态加载的**领域知识模块**。每个 Skill 对应一个工具或方法论，Agent 在执行任务时通过 `load_skill` 获取用法说明，然后按照说明操作。
 
-XuanMu 内置了多个 Skill（nmap、sqlmap、httpx、binwalk、jadx 等），主要在沙箱容器中使用。
+### 两种模式
 
-### 自定义 Skill（本地模式）
+XuanMu 有两种 Skill 模式，路径和用途不同：
 
-你可以在本地 `.agents/skills/` 目录下添加自己的 Skill，无需改代码：
+| 模式 | 路径 | 用途 | 何时生效 |
+|------|------|------|---------|
+| **本地模式** | `项目根目录/.agents/skills/` | 用户自定义 Skill | 无需 Docker，直接可用 |
+| **沙箱模式** | `sandbox/.agents/skills/` | 内置工具 Skill（nmap 等） | 仅 Docker 沙箱容器内生效 |
+
+### 本地模式（你自建的 Skill）
+
+在**项目根目录**下的 `.agents/skills/` 中创建，无需 Docker，无需改代码。Skill 可以是纯知识类文档，也可以包含可执行脚本：
 
 ```bash
-mkdir -p .agents/skills/my-tool
+# 在项目根目录下操作（比如 /root/Desktop/XuanMu-RedTeam-Agent/）
+mkdir -p .agents/skills/my-skill
 ```
 
-每个 Skill 目录结构：
+目录结构：
 
 ```
-.agents/skills/
-└── my-tool/
-    ├── SKILL.md        ← 必需：技能说明（含 YAML 头）
-    ├── script.sh       ← 可选：辅助脚本
-    └── data/           ← 可选：数据文件
+项目根目录/
+└── .agents/
+    └── skills/                   ← 手动创建这个目录
+        ├── sql-injection-guide/  ← 纯知识类（只有 SKILL.md）
+        │   └── SKILL.md
+        ├── windows-privesc/      ← 纯知识类
+        │   └── SKILL.md
+        └── my-scanner/           ← 带脚本的（SKILL.md + 资源文件）
+            ├── SKILL.md
+            ├── scan.sh
+            └── payloads.txt
 ```
+
+### 沙箱模式（内置工具 Skill）
+
+`sandbox/.agents/skills/` 中的 Skill 是项目内置的，**仅在 Docker 沙箱容器内生效**。这些 Skill 对应容器里预装的命令行工具。如果你没启用沙箱（本地模式），它们不会被加载。
 
 ### SKILL.md 格式
+
+两种模式的 SKILL.md 格式完全一样：
 
 ````markdown
 ---
@@ -400,7 +420,9 @@ my-tool --help
 3. Agent 按照 SKILL.md 的指引执行命令
 4. 如果 Skill 目录下有辅助脚本，Agent 可以读取路径后引用
 
-### 内置 Skill 清单
+### 内置 Skill 清单（沙箱模式专用）
+
+以下 Skill 仅在**启用沙箱容器**时生效，全部位于 `sandbox/.agents/skills/`：
 
 | Skill | 用途 |
 |-------|------|
