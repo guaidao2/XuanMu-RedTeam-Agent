@@ -57,6 +57,20 @@ else
     fi
 fi
 
+# 检查 Node.js 版本（Vite 8 要求 >= 20.19）
+if command -v node >/dev/null 2>&1; then
+    NODE_MAJOR=$(node -v 2>/dev/null | sed 's/v\([0-9]*\).*/\1/')
+    if [ -n "$NODE_MAJOR" ] && [ "$NODE_MAJOR" -lt 20 ]; then
+        err "Node.js 版本过低 (当前 v$NODE_MAJOR)，前端构建需要 Node.js >= 20.19。请升级: curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash - && sudo apt install -y nodejs"
+    elif [ "$NODE_MAJOR" = "20" ]; then
+        NODE_MINOR=$(node -v 2>/dev/null | sed 's/v20\.\([0-9]*\).*/\1/')
+        if [ -n "$NODE_MINOR" ] && [ "$NODE_MINOR" -lt 19 ]; then
+            err "Node.js 版本过低 (当前 v20.$NODE_MINOR)，前端构建需要 Node.js >= 20.19。请升级: curl -fsSL https://deb.nodesource.com/setup_22.x | sudo -E bash - && sudo apt install -y nodejs"
+        fi
+    fi
+    log "Node.js: $(node -v)"
+fi
+
 # ---------- 3. 配置 PostgreSQL ----------
 info "配置 PostgreSQL..."
 if pg_isready -q 2>/dev/null; then
@@ -151,8 +165,15 @@ log "Python 依赖已安装"
 # ---------- 6. 构建前端 ----------
 info "构建前端界面..."
 if [ -d "$PROJECT_DIR/web" ]; then
-    if [ ! -d "$PROJECT_DIR/web/node_modules" ]; then
-        cd "$PROJECT_DIR/web" && npm install 2>&1 | tail -1
+    # 安装前端依赖（检查关键依赖是否真正就绪，防止残缺 node_modules 跳过）
+    if [ ! -d "$PROJECT_DIR/web/node_modules/openapi-typescript" ] || [ ! -d "$PROJECT_DIR/web/node_modules/vite" ]; then
+        cd "$PROJECT_DIR/web"
+        if ! npm install > "$PROJECT_DIR/web/.npm-install.log" 2>&1; then
+            tail -20 "$PROJECT_DIR/web/.npm-install.log"
+            err "npm install 失败，请检查上方错误日志"
+        fi
+        rm -f "$PROJECT_DIR/web/.npm-install.log"
+        cd "$PROJECT_DIR"
     fi
     # 获取 openapi.json
     if [ ! -f "$PROJECT_DIR/openapi.json" ]; then
