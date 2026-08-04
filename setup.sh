@@ -160,18 +160,19 @@ if [ -d "$PROJECT_DIR/web" ]; then
         if ! curl -s -o /dev/null http://127.0.0.1:8000/docs 2>/dev/null; then
             cd "$PROJECT_DIR"
             source "$VENV_DIR/bin/activate"
-            timeout 10 python main.py 2>/dev/null &
-            sleep 6
+            python main.py 2>/dev/null &
+            BOOT_PID=$!
             RETRIES=0
             until curl -s http://127.0.0.1:8000/openapi.json -o "$PROJECT_DIR/openapi.json" 2>/dev/null; do
                 RETRIES=$((RETRIES + 1))
-                if [ $RETRIES -ge 3 ]; then
+                if [ $RETRIES -ge 10 ]; then
                     warn "无法获取 openapi.json，跳过前端 API 类型生成"
                     break
                 fi
                 sleep 2
             done
-            pkill -f "python main.py" 2>/dev/null || true
+            kill "$BOOT_PID" 2>/dev/null || true
+            wait "$BOOT_PID" 2>/dev/null || true
         else
             curl -s http://127.0.0.1:8000/openapi.json -o "$PROJECT_DIR/openapi.json" 2>/dev/null
         fi
@@ -181,11 +182,14 @@ if [ -d "$PROJECT_DIR/web" ]; then
     if [ -f "$PROJECT_DIR/openapi.json" ]; then
         ln -sf "$PROJECT_DIR/openapi.json" "$PROJECT_DIR/web/openapi.json"
     fi
-    if npm run build 2>&1 | tail -3; then
+    if npm run build > "$PROJECT_DIR/web/.build.log" 2>&1; then
+        tail -3 "$PROJECT_DIR/web/.build.log"
         log "前端构建完成"
     else
-        warn "前端构建失败，请检查错误日志"
+        tail -20 "$PROJECT_DIR/web/.build.log"
+        warn "前端构建失败，请检查上方错误日志"
     fi
+    rm -f "$PROJECT_DIR/web/.build.log"
     cd "$PROJECT_DIR"
 else
     warn "无 web 目录，跳过前端构建"
