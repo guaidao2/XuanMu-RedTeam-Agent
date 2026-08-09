@@ -1,6 +1,6 @@
 import cytoscape from "cytoscape";
 import fcose from "cytoscape-fcose";
-import { Minus, Plus } from "lucide-react";
+import { Maximize2, Minus, Plus } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { BlackboardNode } from "../../shared/api/types";
 import {
@@ -101,6 +101,13 @@ export function BlackboardGraphCanvas({ nodes }: { nodes: BlackboardNode[] }) {
     cy.zoom({ level: n, renderedPosition: { x: g.clientWidth / 2, y: g.clientHeight / 2 } });
   };
 
+  const resetView = () => {
+    const cy = cyRef.current;
+    if (!cy) return;
+    cy.resize();
+    cy.fit(undefined, FIT_PADDING);
+  };
+
   return (
     <div className="project-graph">
       <div ref={graphRef} className="project-graph-canvas" role="img" aria-label="Blackboard reasoning graph" />
@@ -110,6 +117,7 @@ export function BlackboardGraphCanvas({ nodes }: { nodes: BlackboardNode[] }) {
       <div className="project-graph-controls blackboard-graph-controls">
         <button type="button" aria-label="Zoom in" onClick={() => zoomFromCenter(CONTROL_ZOOM_FACTOR)}><Plus size={15} /></button>
         <button type="button" aria-label="Zoom out" onClick={() => zoomFromCenter(1 / CONTROL_ZOOM_FACTOR)}><Minus size={15} /></button>
+        <button type="button" aria-label="Reset view" onClick={resetView}><Maximize2 size={14} /></button>
       </div>
     </div>
   );
