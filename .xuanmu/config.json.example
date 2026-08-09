@@ -25,7 +25,7 @@
     "agent_runtime": {
         "main_max_turns": 1000,
         "subordinate_max_turns": 1000,
-        "model_stream_idle_timeout_seconds": 300,
+        "model_stream_idle_timeout_seconds": 600,
         "context_compression_enabled": true,
         "context_compression_trigger_ratio": 0.95,
         "context_compression_hard_stop_ratio": 0.98,
