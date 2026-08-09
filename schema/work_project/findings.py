@@ -2,7 +2,9 @@ from datetime import datetime
 from enum import StrEnum
 from typing import Any
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+
+from schema.work_project import accept_json_string
 
 class WorkProjectFindingSeverity(StrEnum):
     INFO = "info"
@@ -54,3 +56,8 @@ class WorkProjectFindingRequest(BaseModel):
         if isinstance(value, str):
             return value.strip()
         return value
+
+    @model_validator(mode="before")
+    @classmethod
+    def tolerate_json_string(cls, value: Any) -> Any:
+        return accept_json_string(value)

@@ -4,6 +4,8 @@ from typing import Any
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from schema.work_project import accept_json_string
+
 
 class WorkProjectGraphEdgeType(StrEnum):
     # Structural relations describe the target architecture.
@@ -102,6 +104,11 @@ class WorkProjectGraphEdgeRequest(BaseModel):
             return value.strip()
         return value
 
+    @model_validator(mode="before")
+    @classmethod
+    def tolerate_json_string(cls, value: Any) -> Any:
+        return accept_json_string(value)
+
     @model_validator(mode="after")
     def validate_endpoints(self) -> "WorkProjectGraphEdgeRequest":
         if self.source_asset_id == self.target_asset_id:
@@ -123,12 +130,22 @@ class WorkProjectAttackPathRequest(BaseModel):
             return value.strip()
         return value
 
+    @model_validator(mode="before")
+    @classmethod
+    def tolerate_json_string(cls, value: Any) -> Any:
+        return accept_json_string(value)
+
 
 class WorkProjectAttackPathStepRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     sequence: int = Field(gt=0)
     edge_id: int = Field(gt=0)
+
+    @model_validator(mode="before")
+    @classmethod
+    def tolerate_json_string(cls, value: Any) -> Any:
+        return accept_json_string(value)
 
 
 class WorkProjectGraphSnapshotSchema(BaseModel):

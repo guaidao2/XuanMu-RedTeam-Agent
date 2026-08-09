@@ -4,6 +4,8 @@ from enum import StrEnum
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
+from schema.work_project import accept_json_string
+
 class WorkProjectAssetType(StrEnum):
     SERVICE = "service"
     DOMAIN = "domain"
@@ -80,6 +82,11 @@ class WorkProjectAssetRequest(BaseModel):
         if isinstance(value, str):
             return value.strip()
         return value
+
+    @model_validator(mode="before")
+    @classmethod
+    def tolerate_json_string(cls, value: object) -> object:
+        return accept_json_string(value)
 
     @model_validator(mode="after")
     def validate_required_fields(self) -> "WorkProjectAssetRequest":
