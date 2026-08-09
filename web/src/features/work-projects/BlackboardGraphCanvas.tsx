@@ -107,7 +107,7 @@ export function BlackboardGraphCanvas({ nodes }: { nodes: BlackboardNode[] }) {
 
       <BlackboardLegend />
 
-      <div className="project-graph-controls">
+      <div className="project-graph-controls blackboard-graph-controls">
         <button type="button" aria-label="Zoom in" onClick={() => zoomFromCenter(CONTROL_ZOOM_FACTOR)}><Plus size={15} /></button>
         <button type="button" aria-label="Zoom out" onClick={() => zoomFromCenter(1 / CONTROL_ZOOM_FACTOR)}><Minus size={15} /></button>
       </div>

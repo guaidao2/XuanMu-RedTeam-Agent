@@ -1139,6 +1139,10 @@
   gap: 6px;
 }
 
+.blackboard-graph-controls {
+  bottom: 24px;
+}
+
 .project-graph-controls button {
   display: inline-flex;
   align-items: center;
